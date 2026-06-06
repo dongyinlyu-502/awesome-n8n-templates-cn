@@ -1,0 +1,110 @@
+{
+  "name": "CN Email Management - Morning Evening AI Digest",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "f1d553c1-4a3a-46f5-bcc4-3f920e0a34ea",
+      "name": "Manual Test",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        180,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 7,21 * * *"
+            }
+          ]
+        }
+      },
+      "id": "72b05935-2274-47b2-b609-789346797ed8",
+      "name": "Every Day 07:00 and 21:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        180,
+        320
+      ],
+      "notes": "Set the workflow timezone to Asia/Shanghai. n8n requires the workflow to be saved and activated for scheduled runs."
+    },
+    {
+      "parameters": {
+        "command": "cd /data/templates/mail-digest-imap-ai-smtp && python scripts/mail_digest.py"
+      },
+      "id": "d96b52fd-12c1-4c93-94f8-0fc96c4e7140",
+      "name": "Run Mail Digest Script",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        520,
+        220
+      ],
+      "notes": "Change the directory to the path where this template lives on your n8n server."
+    },
+    {
+      "parameters": {
+        "content": "## 邮件早晚 AI 简报\n\n本地演示：复制 `.env.demo` 为 `.env`，运行脚本，会生成 `preview/latest.html`，不会连接真实邮箱或发送邮件。\n\n真实部署：\n1. 把本模板目录放到 n8n 服务器。\n2. 复制 `.env.example` 为 `.env` 并填写邮箱、AI、收件人。\n3. 修改 Execute Command 里的目录路径。\n4. 设置 workflow timezone 为 `Asia/Shanghai`。\n5. 保存并激活 workflow。\n\n默认每天 07:00 和 21:00 执行。",
+        "height": 300,
+        "width": 420
+      },
+      "id": "d1fa00df-6551-4d3e-8a66-f2fb6f408e9b",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        160,
+        -240
+      ]
+    }
+  ],
+  "connections": {
+    "Manual Test": {
+      "main": [
+        [
+          {
+            "node": "Run Mail Digest Script",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Every Day 07:00 and 21:00": {
+      "main": [
+        [
+          {
+            "node": "Run Mail Digest Script",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "timezone": "Asia/Shanghai",
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "cn"
+    },
+    {
+      "name": "email-management"
+    },
+    {
+      "name": "ai-digest"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2026-06-06T00:00:00.000Z",
+  "versionId": "9a6f82df-7dd5-4af1-951f-493ea8e10c7a"
+}
